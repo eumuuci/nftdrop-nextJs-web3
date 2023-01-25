@@ -2,9 +2,9 @@ import React from 'react';
 import { useMetamask, useAddress, useDisconnect } from "@thirdweb-dev/react";
 
 const nftDropPage: React.FC = () => {
-  const connectWithMetamask = useMetamask();
-  const address = useAddress();
-  const disconnect = useDisconnect();
+  const ConnectWithMetamask = useMetamask();
+  const Address = useAddress();
+  const Disconnect = useDisconnect();
 
   return (
     <div className='flex h-screen flex-col lg:grid lg:grid-cols-10'>
@@ -34,16 +34,16 @@ const nftDropPage: React.FC = () => {
           {' '}NFT Market Place
           </h1>
         <button 
-        onClick={() => (address ? disconnect() : connectWithMetamask())}
+        onClick={() => (Address ? Disconnect() : ConnectWithMetamask())}
         className='rounded-full bg-[#1b263b] px-4 text-white py-2 text-xs
-        font-bold lg:px-5 lg:py-3 lg:text-base'>{ address ? 'Sing Out' : 'Sing In' }</button>
+        font-bold lg:px-5 lg:py-3 lg:text-base'>{ Address ? 'Sing Out' : 'Sing In' }</button>
       </header>
 
       <hr  className='my-2 border'/>
-      {address && (
+      {Address && (
         <p
         className='text-sm text-center text-[#778da9]'
-        >You're logged in with wallet {address.substring(0, 5)}...{address.substring(address.length - 5)}</p>
+        >You're logged in with wallet {Address.substring(0, 5)}...{Address.substring(Address.length - 5)}</p>
       )}
       {/* content */}
       <div className='mt-10 flex flex-1 flex-col items-center space-y-6 text-center
