@@ -1,7 +1,7 @@
 import React from 'react';
-import { useMetamask, useAddress, useDisconnect } from "@thirdweb-dev/react";
+import { useMetamask, useAddress , useDisconnect } from "@thirdweb-dev/react";
 
-const nftDropPage: React.FC = () => {
+const nftDropPage = () => {
   const ConnectWithMetamask = useMetamask();
   const Address = useAddress();
   const Disconnect = useDisconnect();
