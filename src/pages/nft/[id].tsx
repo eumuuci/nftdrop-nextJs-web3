@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMetamask, useAddress , useDisconnect } from "@thirdweb-dev/react";
 
-const nftDropPage = () => {
+const NftDropPage = () => {
   const ConnectWithMetamask = useMetamask();
   const Address = useAddress();
   const Disconnect = useDisconnect();
@@ -65,4 +65,4 @@ const nftDropPage = () => {
   )
 }
 
-export default nftDropPage;
+export default NftDropPage;
