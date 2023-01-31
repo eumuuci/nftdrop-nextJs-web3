@@ -40,7 +40,7 @@ const NftDropPage = ({collection}: Props) => {
         sm:w-80'>
           The{' '}
           <span className='font-extrabold underline decoration-[#415a77]'>STAREACT</span>
-          {' '}NFT Market Place drop
+          {' '}NFT Market Place
           </h1>
         </Link>
         <button 
