@@ -39,7 +39,7 @@ const NftDropPage = ({collection}: Props) => {
         <h1 className='w-52 cursor-pointer text-xl font-extralight
         sm:w-80'>
           The{' '}
-          <span className='font-extrabold underline decoration-[#415a77]'>STAREACT</span>
+          <span className='font-extrabold underline decoration-[#415a77]'>STAR</span>
           {' '}NFT Market Place
           </h1>
         </Link>
