@@ -1,8 +1,10 @@
-import React from 'react';
-import { useMetamask, useAddress , useDisconnect } from "@thirdweb-dev/react";
+import React, {useState, useEffect} from 'react';
+import { useMetamask, useAddress , useDisconnect, useContract } from "@thirdweb-dev/react";
 import { GetServerSideProps } from 'next';
 import { sanityClient, urlFor } from 'sanity';
 import { Collection } from 'typings';
+import { BigNumber } from 'ethers';
+import toast, { Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 
 interface Props {
@@ -10,12 +12,77 @@ interface Props {
 }
 
 const NftDropPage = ({collection}: Props) => {
+  const [claimed, setClaimed] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [totalSuply, setTotalSuply] = useState<BigNumber>();
+  const [priceETH, setPriceETH] = useState<string>();
+  const nftDrop = useContract(collection.address, "nft-drop").contract
+
+
   const ConnectWithMetamask = useMetamask();
   const Address = useAddress();
   const Disconnect = useDisconnect();
 
+  useEffect( () => {
+    if(!nftDrop) return;
+    const fetchPrice = async () => {
+      const claimCondition = await nftDrop.claimConditions.getAll()
+      setPriceETH(claimCondition?.[0]?.currencyMetadata?.displayValue)
+    }
+    fetchPrice()
+  }, [nftDrop] )
+
+  useEffect( () => {
+    if(!nftDrop) return;
+
+    const fetchNFTInfoData = async () => {
+      const claimed = await nftDrop.getAllClaimed();
+      const total = await nftDrop.totalSupply();
+
+      setClaimed(claimed.length)
+      setTotalSuply(total)
+      setLoading(false)
+    }
+    fetchNFTInfoData();
+  }, [nftDrop] )
+
+  const claimNFT = () => {
+    if(!nftDrop || !Address) return;
+    const quantity = 1;
+
+    setLoading(true);
+    const notification = toast.loading('Claiming NFT...', {
+      style: {
+        backgroundColor: 'white',
+        color: 'green',
+        fontWeight: 'bold',
+        fontSize: '17px',
+        padding: '20px',
+      }
+    })
+
+    nftDrop.claimTo(Address, quantity).then( async (data) => {
+      const receipt = data[0].receipt
+      const claimedToken = data[0].id
+      const claimedNFT = data[0].data()
+
+      toast('Congrats :)! You have claimed your NFT!')
+
+      console.log(claimedToken)
+      console.log(claimedNFT)
+      console.log(receipt)
+      
+    }).catch( error => {
+      console.log(error)
+    }).finally( () => {
+      setLoading(false)
+      toast.dismiss(notification)
+    });
+  }
+
   return (
     <div className='flex h-screen flex-col lg:grid lg:grid-cols-10'>
+      <Toaster position='bottom-center'/>
       {/* left */}
       <div className='bg-[#0d1b2a] lg:col-span-4'>
         <div className='flex flex-col items-center justify-center py-2 lg:min-h-screen'>
@@ -65,11 +132,36 @@ const NftDropPage = ({collection}: Props) => {
           {collection?.title}
         </h1>
 
-        <p className='pt-2 text-xl text-green-500'>14 / 20 NFT's claimed</p>
+        {
+          loading ? 
+          (
+            <p className='pt-2 text-xl text-[#778da9] animate-bounce'>crafting Nft's...</p>
+          ):
+          (
+            <p className='pt-2 text-xl text-green-500'>{claimed} / {totalSuply?.toString()} NFT's claimed</p>
+          )
+        }
       </div>
       {/* mint button */}
-      <button className='h-16 w-full bg-[#778da9] text-white rounded-full mt-10 font-bold'
-      >Mint NFT (0.01 ETH)</button>
+      <button
+      onClick={claimNFT}
+      disabled={ loading || claimed === totalSuply?.toNumber() || !Address }
+      className='h-16 w-full bg-[#81b29a] text-white rounded-full mt-10 font-bold disabled:bg-gray-400'
+      >
+        {
+          loading ? 
+          (
+            <>Looking at shelf</>
+          ) : claimed === totalSuply?.toNumber()? (
+            <>`SOLD OUT :(`</>
+          ) : !Address ? (
+            <>SingIn to aclaim</>
+          ) :
+          (
+            <span className='font-bold'>Mint NFT ({priceETH} ETH)</span>
+          )
+        }
+        </button>
       </div>
     </div>
   )
