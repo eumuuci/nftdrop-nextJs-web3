@@ -55,7 +55,7 @@ const NftDropPage = ({collection}: Props) => {
       style: {
         backgroundColor: 'white',
         color: 'green',
-        fontWeight: 'bold',
+        fontWeight: 'bolder',
         fontSize: '17px',
         padding: '20px',
       }
@@ -66,7 +66,16 @@ const NftDropPage = ({collection}: Props) => {
       const claimedToken = data[0].id
       const claimedNFT = data[0].data()
 
-      toast('Congrats :)! You have claimed your NFT!')
+      toast('Congrats :)! You have claimed your NFT!', {
+        duration: 8000,
+        style: {
+          backgroundColor: 'green',
+          color: 'white',
+          fontWeight: 'bolder',
+          fontSize: '17px',
+          padding: '20px',
+        }
+      })
 
       console.log(claimedToken)
       console.log(claimedNFT)
@@ -74,6 +83,15 @@ const NftDropPage = ({collection}: Props) => {
       
     }).catch( error => {
       console.log(error)
+      toast('oops :(, something went wrong', {
+        style: {
+          backgroundColor: 'red',
+          color: 'white',
+          fontWeight: 'bolder',
+          fontSize: '17px',
+          padding: '20px',
+        }
+      })
     }).finally( () => {
       setLoading(false)
       toast.dismiss(notification)
